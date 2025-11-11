@@ -1,0 +1,14 @@
+const nodemailer = require("nodemailer");
+const sendEmail = (opitions) => {
+  //1) create transporter
+  const transporter = nodemailer.createTransport({
+    host:process.env.EMAIL_HOST,
+    port:process.env.
+    auth: {
+      user: process.env.EMAIL_USERNAME,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+  //2)define the email opitions
+  //3) actully send the email
+};

@@ -1,0 +1,26 @@
+const mongoose = require("mongoose");
+const shopSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, "please enter the shop name"],
+    trim: true,
+  },
+  address: {
+    type: String,
+    trim: true,
+  },
+  contact: {
+    type: String,
+    required: [true, "Please enter the contact number"],
+    validate: {
+      validator: function (v) {
+        return /^(\+92|0)?\d{10}$/.test(v);
+      },
+      message: "Please enter a valid contact number",
+    },
+  },
+  address: {
+    type: String,
+    trim: true,
+  },
+});
