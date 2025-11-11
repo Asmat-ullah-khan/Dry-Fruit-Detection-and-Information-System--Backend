@@ -28,6 +28,12 @@ const provinceRouter = require("./routes/province");
 const cityRouter = require("./routes/city.js");
 const shopRouter = require("./routes/shop");
 const FeedbackRouter = require("./routes/feed-back.js");
+const contactRouter = require("./routes/contact");
+const seasonRoutes = require("./routes/season.js");
+const healthRouter = require("./routes/health");
+const statsRoutes = require("./routes/stats");
+const cors = require("cors");
+const path = require("path");
 
 // Load environment variables
 dotenv.config({ path: "./config.env" });
@@ -36,6 +42,8 @@ const app = express();
 
 // Middleware: parse JSON bodies
 app.use(express.json());
+app.use(cors());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 /**
  * Middleware: request logger
@@ -55,6 +63,10 @@ app.use("/api/v1/provinces", provinceRouter);
 app.use("/api/v1/cities", cityRouter);
 app.use("/api/v1/shops", shopRouter);
 app.use("/api/v1/feedbacks", FeedbackRouter);
+app.use("/api/v1/contacts", contactRouter);
+app.use("/api/v1/seasons", seasonRoutes);
+app.use("/api/v1/health", healthRouter);
+app.use("/api/v1/stats", statsRoutes);
 /**
  * Handle all undefined routes
  * Forwards to the global error handler with a 404 error.

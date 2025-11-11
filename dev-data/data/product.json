@@ -7,7 +7,8 @@
     "carbs": 22,
     "fats": 49,
     "price": 1200,
-    "province": "Balochistan"
+    "province": "68b29c29d1c6e53e43a4f41a",
+    "shop": "68b6fff3b959ccf831d481d1"
   },
   {
     "product": "Cashew",
@@ -17,7 +18,8 @@
     "carbs": 30,
     "fats": 44,
     "price": 1500,
-    "province": "Sindh"
+    "province": "68b29c29d1c6e53e43a4f418",
+    "shop": "68b7000bb959ccf831d481d3"
   },
   {
     "product": "Fig",
@@ -27,7 +29,8 @@
     "carbs": 64,
     "fats": 1,
     "price": 800,
-    "province": "Punjab"
+    "province": "68b29e94da77460e5356024f",
+    "shop": "68b70020b959ccf831d481d5"
   },
   {
     "product": "Raisin",
@@ -37,7 +40,8 @@
     "carbs": 79,
     "fats": 0,
     "price": 700,
-    "province": "Khyber Pakhtunkhwa"
+    "province": "68b29c29d1c6e53e43a4f419",
+    "shop": "68b70031b959ccf831d481d7"
   },
   {
     "product": "Peanut",
@@ -47,7 +51,8 @@
     "carbs": 16,
     "fats": 49,
     "price": 500,
-    "province": "Punjab"
+    "province": "68b29e94da77460e5356024f",
+    "shop": "68b7000bb959ccf831d481d3"
   },
   {
     "product": "Pistachio",
@@ -57,7 +62,8 @@
     "carbs": 28,
     "fats": 45,
     "price": 2000,
-    "province": "Balochistan"
+    "province": "68b29c29d1c6e53e43a4f41a",
+    "shop": "68b6fff3b959ccf831d481d1"
   },
   {
     "product": "Walnut",
@@ -67,6 +73,7 @@
     "carbs": 14,
     "fats": 65,
     "price": 1600,
-    "province": "Gilgit-Baltistan"
+    "province": "68b41d4b9d5e6ba19f75855d",
+    "shop": "68b70020b959ccf831d481d5"
   }
 ]

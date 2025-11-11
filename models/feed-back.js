@@ -5,7 +5,7 @@ const feedbackSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
     },
     type: {
       type: String,
@@ -29,6 +29,10 @@ const feedbackSchema = new mongoose.Schema(
       type: String,
       required: [true, "Feedback cannot be empty"],
       trim: true,
+    },
+    allowContact: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

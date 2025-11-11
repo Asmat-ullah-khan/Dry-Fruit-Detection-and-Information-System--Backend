@@ -1,93 +1,115 @@
-const product = require("../models/product.model");
-const AppError = require("../util/app-errors");
+const productService = require("../services/product");
 const catchAsync = require("../util/catch-async");
+const AppError = require("../util/app-errors");
 
-/**
- * Create a new product
- * @route POST /api/v1/products
- * @access Public (can adjust later if you add auth)
- */
-// eslint-disable-next-line no-unused-vars
-exports.createProduct = catchAsync(async (req, res, next) => {
-  const newProduct = await product.create(req.body);
-  res.status(201).json({
-    status: "success",
-    data: {
-      product: newProduct,
-    },
-  });
-});
+exports.searchProducts = catchAsync(async (req, res) => {
+  const filters = {
+    province: req.query.province,
+    price: req.query.price,
+    trending: req.query.trending,
+  };
 
-/**
- * Get all products
- * @route GET /api/v1/products
- * @access Public
- */
-// eslint-disable-next-line no-unused-vars
-exports.getAllProducts = catchAsync(async (req, res, next) => {
-  const products = await product.find();
+  const products = await productService.searchProducts(filters);
+
   res.status(200).json({
     status: "success",
     results: products.length,
-    data: {
-      products,
-    },
+    data: { products },
   });
 });
 
 /**
- * Get a single product by ID
- * @route GET /api/v1/products/:id
- * @param {string} req.params.id - Product ID
- * @access Public
+ * @desc    Create a new product
+ * @route   POST /api/v1/products
+ * @access  Public
  */
-exports.getProduct = catchAsync(async (req, res, next) => {
-  const foundProduct = await product.findById(req.params.id);
-  if (!foundProduct) {
-    return next(new AppError("No product found with that ID", 404));
+exports.createProduct = catchAsync(async (req, res, next) => {
+  const productData = req.body;
+  if (!req.file) {
+    return next(new AppError("Product image is required", 400));
   }
+  productData.image = `${req.protocol}://${req.get("host")}/uploads/products/${
+    req.file.filename
+  }`;
+  const product = await productService.createProduct(productData);
+
+  res.status(201).json({
+    status: "success",
+    data: { product },
+  });
+});
+
+/**
+ * @desc    Get all products
+ * @route   GET /api/v1/products
+ * @access  Public
+ */
+exports.getAllProducts = catchAsync(async (req, res) => {
+  const isAdmin = req.user?.role === "admin";
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 11;
+
+  const result = await productService.getAllProducts(isAdmin, page, limit);
+
+  // ✅ If admin → show pagination details
+  if (isAdmin) {
+    return res.status(200).json({
+      status: "success",
+      totalProducts: result.totalProducts,
+      totalPages: result.totalPages,
+      currentPage: result.currentPage,
+      results: result.products.length,
+      data: { products: result.products },
+    });
+  }
+
+  // ✅ For normal/guest user → show all products
   res.status(200).json({
     status: "success",
-    data: { product: foundProduct },
+    results: result.products.length,
+    data: { products: result.products },
   });
 });
 
 /**
- * Update a product by ID
- * @route PATCH /api/v1/products/:id
- * @param {string} req.params.id - Product ID
- * @access Public
+ * @desc    Get single product by ID
+ * @route   GET /api/v1/products/:id
+ * @access  Public
  */
-exports.updateProduct = catchAsync(async (req, res, next) => {
-  const updatedProduct = await product.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true, // return the updated document
-      runValidators: true, // validate against schema
-    }
-  );
-  if (!updatedProduct) {
-    return next(new AppError("No product found with that ID", 404));
-  }
+exports.getProduct = catchAsync(async (req, res) => {
+  const product = await productService.getProductById(req.params.id);
   res.status(200).json({
     status: "success",
-    data: { product: updatedProduct },
+    data: { product },
   });
 });
 
 /**
- * Delete a product by ID
- * @route DELETE /api/v1/products/:id
- * @param {string} req.params.id - Product ID
- * @access Public
+ * @desc    Update a product
+ * @route   PATCH /api/v1/products/:id
+ * @access  Public
  */
-exports.deleteProduct = catchAsync(async (req, res, next) => {
-  const deletedProduct = await product.findByIdAndDelete(req.params.id);
-  if (!deletedProduct) {
-    return next(new AppError("No product found with that ID", 404));
+exports.updateProduct = catchAsync(async (req, res) => {
+  if (req.file) {
+    req.body.image = `${req.protocol}://${req.get("host")}/uploads/products/${
+      req.file.filename
+    }`;
   }
+  const product = await productService.updateProduct(req.params.id, req.body);
   res.status(200).json({
+    status: "success",
+    data: { product },
+  });
+});
+
+/**
+ * @desc    Delete a product
+ * @route   DELETE /api/v1/products/:id
+ * @access  Public
+ */
+exports.deleteProduct = catchAsync(async (req, res) => {
+  await productService.deleteProduct(req.params.id);
+  res.status(204).json({
     status: "success",
     data: null,
   });

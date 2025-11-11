@@ -58,6 +58,9 @@ const userSchma = new mongoose.Schema(
       required: [true, "please provide a Phone Number"],
       match: [/^[0-9]{10,15}$/, "Please enter a valid phone number"],
     },
+    profileImage: {
+      type: String,
+    },
   },
   { timestamps: true, versionKey: false }
 );
@@ -69,7 +72,9 @@ userSchma.pre("save", function (next) {
   next();
 });
 userSchma.pre(/^find/, function (next) {
-  this.find({ active: { $ne: false } });
+  if (!this.getOptions().bypassFilter) {
+    this.find({ active: { $ne: false } });
+  }
   next();
 });
 userSchma.methods.correctPassword = async function (

@@ -6,55 +6,44 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please add the product name"],
       trim: true,
-      enum: [
-        "Almond",
-        "Cashew",
-        "Figs",
-        "Raisin",
-        "Peanut",
-        "Pistachio",
-        "Walnut",
-      ],
     },
-    description: {
+    description: { type: String, required: true },
+    calories: { type: Number, required: true, min: 0 },
+    protein: { type: Number, required: true, min: 0 },
+    carbs: { type: Number, required: true, min: 0 },
+    fats: { type: Number, required: true, min: 0 },
+    price: { type: Number, required: true, min: 0 },
+    image: { type: String },
+
+    // ✅ Diet information
+    dietInfo: {
       type: String,
-      required: [true, "Please provide description"],
+      default: "A nutritious food, suitable for most diets.",
     },
-    calories: {
-      type: Number,
-      required: [true, "Please enter calories"],
-      min: [0, "Calories must be a positive number"],
+    vitamins: {
+      vitaminE: { type: Number, default: 0 },
+      vitaminB6: { type: Number, default: 0 },
+      vitaminK: { type: Number, default: 0 },
     },
-    protein: {
-      type: Number,
-      required: [true, "Please enter protein"],
-      min: [0, "Protein must be a positive number"],
+
+    minerals: {
+      magnesium: { type: Number, default: 0 },
+      potassium: { type: Number, default: 0 },
+      iron: { type: Number, default: 0 },
+      calcium: { type: Number, default: 0 },
     },
-    carbs: {
-      type: Number,
-      required: [true, "Please enter carbs"],
-      min: [0, "Carbs must be a positive number"],
-    },
-    fats: {
-      type: Number,
-      required: [true, "Please enter fats"],
-      min: [0, "Fats must be a positive number"],
-    },
-    price: {
-      type: Number,
-      required: [true, "Please enter price"],
-      min: [0, "Price must be a positive number"],
-    },
-    city: {
+
+    shop: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "City",
-      required: [true, "please enter the city as well"],
+      ref: "Shop",
     },
+
     province: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Province",
-      require: [true, "please enter the province"],
     },
+
+    trending: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

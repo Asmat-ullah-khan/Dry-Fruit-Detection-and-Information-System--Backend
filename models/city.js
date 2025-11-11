@@ -9,7 +9,6 @@ const citySchema = new mongoose.Schema(
     province: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Province",
-      required: [true, "please select the province"],
     },
   },
   { timestamps: true }

@@ -8,7 +8,15 @@ const createSendToken = (user, statusCode, res) => {
     status: "success",
     token,
     data: {
-      user,
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        phoneNumber: user.phoneNumber,
+        profileImage: user.profileImage,
+      },
     },
   });
 };
@@ -17,7 +25,18 @@ exports.signup = catchAsync(async (req, res, next) => {
   if (!req.body || Object.keys(req.body).length === 0) {
     return next(new AppError("No request body provided", 400));
   }
-  const newUser = await authService.signupUser(req.body);
+  const signupData = req.body;
+
+  if (!req.file) {
+    return next(new AppError("Please upload profile picture", 400));
+  }
+
+  signupData.profileImage = `${req.protocol}://${req.get(
+    "host"
+  )}/uploads/users/${req.file.filename}`;
+
+  const newUser = await authService.signupUser(signupData);
+
   createSendToken(newUser, 201, res);
 });
 
@@ -31,9 +50,10 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
-  await authService.forgotPassword(req.body.email, req);
+  const resetToken = await authService.forgotPassword(req.body.email, req);
   res.status(200).json({
     status: "success",
+    resetToken: resetToken,
     message: "Token has been sent to the email",
   });
 });

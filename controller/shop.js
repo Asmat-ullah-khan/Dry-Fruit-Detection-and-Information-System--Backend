@@ -1,6 +1,4 @@
-const Shop = require("../models/shop");
-const City = require("../models/city");
-const AppError = require("../util/app-errors");
+const shopService = require("../services/shop");
 const catchAsync = require("../util/catch-async");
 
 /**
@@ -8,12 +6,8 @@ const catchAsync = require("../util/catch-async");
  * @route   POST /api/v1/shops
  * @access  Private (Admin)
  */
-exports.createShop = catchAsync(async (req, res, next) => {
-  if (!req.body || Object.keys(req.body).length === 0) {
-    return next(new AppError("No shop data provided", 400));
-  }
-
-  const shop = await Shop.create(req.body);
+exports.createShop = catchAsync(async (req, res) => {
+  const shop = await shopService.createShop(req.body);
 
   res.status(201).json({
     status: "success",
@@ -26,19 +20,8 @@ exports.createShop = catchAsync(async (req, res, next) => {
  * @route   GET /api/v1/shops
  * @access  Public
  */
-exports.getAllShops = catchAsync(async (req, res, next) => {
-  const shops = await Shop.find().populate({
-    path: "city",
-    select: "name",
-    populate: {
-      path: "province",
-      select: "name",
-    },
-  });
-
-  if (!shops || shops.length === 0) {
-    return next(new AppError("No shops found", 404));
-  }
+exports.getAllShops = catchAsync(async (req, res) => {
+  const shops = await shopService.getAllShops(); // ✅ fixed (added await)
 
   res.status(200).json({
     status: "success",
@@ -52,19 +35,8 @@ exports.getAllShops = catchAsync(async (req, res, next) => {
  * @route   GET /api/v1/shops/:id
  * @access  Public
  */
-exports.getShop = catchAsync(async (req, res, next) => {
-  const shop = await Shop.findById(req.params.id).populate({
-    path: "city",
-    select: "name",
-    populate: {
-      path: "province",
-      select: "name",
-    },
-  });
-
-  if (!shop) {
-    return next(new AppError("No shop found with this ID", 404));
-  }
+exports.getShop = catchAsync(async (req, res) => {
+  const shop = await shopService.getShopById(req.params.id);
 
   res.status(200).json({
     status: "success",
@@ -77,33 +49,8 @@ exports.getShop = catchAsync(async (req, res, next) => {
  * @route   PATCH /api/v1/shops/:id
  * @access  Private (Admin)
  */
-exports.updateShop = catchAsync(async (req, res, next) => {
-  const allowedUpdates = ["name", "address", "contact", "city"];
-  const updates = { ...req.body };
-
-  Object.keys(updates).forEach((key) => {
-    if (!allowedUpdates.includes(key)) {
-      delete updates[key];
-    }
-  });
-
-  if (updates.city) {
-    const cityExists = await City.findById(updates.city);
-    if (!cityExists) {
-      return next(
-        new AppError(`City with ID '${updates.city}' not found`, 404)
-      );
-    }
-  }
-
-  const shop = await Shop.findById(req.params.id);
-  if (!shop) {
-    return next(new AppError("Shop not found", 404));
-  }
-
-  Object.assign(shop, updates);
-  await shop.save();
-
+exports.updateShop = catchAsync(async (req, res) => {
+  const shop = await shopService.updateShop(req.params.id, req.body);
   res.status(200).json({
     status: "success",
     message: "Shop updated successfully",
@@ -116,15 +63,7 @@ exports.updateShop = catchAsync(async (req, res, next) => {
  * @route   DELETE /api/v1/shops/:id
  * @access  Private (Admin)
  */
-exports.deleteShop = catchAsync(async (req, res, next) => {
-  const shop = await Shop.findByIdAndDelete(req.params.id);
-
-  if (!shop) {
-    return next(new AppError("No shop found with this ID", 404));
-  }
-
-  res.status(204).json({
-    status: "success",
-    data: null,
-  });
+exports.deleteShop = catchAsync(async (req, res) => {
+  await shopService.deleteShop(req.params.id);
+  res.status(204).send();
 });
