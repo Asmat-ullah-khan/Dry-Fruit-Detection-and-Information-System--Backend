@@ -35,6 +35,9 @@ exports.findWithFilters = (filter = {}) => {
     })
     .select("product description price trending shop province");
 };
+exports.findByName = async (name) => {
+  return await Product.findOne({ product: new RegExp(`^${name}$`, "i") });
+};
 
 exports.findById = async (id) => {
   return await Product.findById(id)

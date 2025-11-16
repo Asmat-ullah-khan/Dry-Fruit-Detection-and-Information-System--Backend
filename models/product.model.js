@@ -44,6 +44,12 @@ const productSchema = new mongoose.Schema(
     },
 
     trending: { type: Boolean, default: false },
+    benefits: {
+      type: String,
+    },
+    unbenefits: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

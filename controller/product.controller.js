@@ -23,6 +23,7 @@ exports.searchProducts = catchAsync(async (req, res) => {
  * @route   POST /api/v1/products
  * @access  Public
  */
+
 exports.createProduct = catchAsync(async (req, res, next) => {
   const productData = req.body;
   if (!req.file) {
@@ -112,5 +113,14 @@ exports.deleteProduct = catchAsync(async (req, res) => {
   res.status(204).json({
     status: "success",
     data: null,
+  });
+});
+exports.getProductByName = catchAsync(async (req, res) => {
+  const name = req.params.name;
+  const product = await productService.getProductByName(name);
+
+  res.status(200).json({
+    status: "success",
+    data: { product },
   });
 });

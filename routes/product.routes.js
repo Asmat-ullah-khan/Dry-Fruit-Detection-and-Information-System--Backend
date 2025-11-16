@@ -37,6 +37,7 @@ router.get("/search", productController.searchProducts);
  * @param {string} id - Product ID
  * @access Public
  */
+router.get("/by-name/:name", productController.getProductByName);
 router
   .route("/:id")
   .get(productController.getProduct)

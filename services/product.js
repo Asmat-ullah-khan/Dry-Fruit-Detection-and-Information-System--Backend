@@ -106,6 +106,11 @@ exports.getAllProducts = async (isAdmin = false, page, limit) => {
 
   return { products };
 };
+exports.getProductByName = async (name) => {
+  const product = await productRepo.findByName(name);
+  if (!product) throw new AppError(`No product found for: ${name}`, 404);
+  return product;
+};
 
 exports.getProductById = async (id) => {
   const product = await productRepo.findById(id);
