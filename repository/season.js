@@ -20,14 +20,27 @@ exports.update = async (id, data) => {
 exports.delete = async (id) => {
   return await Season.findByIdAndDelete(id);
 };
+
 exports.findCurrentSeason = async () => {
-  const today = new Date();
+  const now = new Date();
+  const startOfToday = new Date(now);
+  startOfToday.setHours(0, 0, 0, 0);
+  const endOfToday = new Date(now);
+  endOfToday.setHours(23, 59, 59, 999);
+
+  console.log(
+    "Checking seasons for:",
+    startOfToday.toISOString(),
+    "->",
+    endOfToday.toISOString()
+  );
 
   return await Season.findOne({
-    startDate: { $lte: today },
-    endDate: { $gte: today },
+    startDate: { $lte: endOfToday },
+    endDate: { $gte: startOfToday },
   }).populate("dryFruits", "product image -_id");
 };
+
 exports.countDocument = async () => {
   return await Season.countDocuments();
 };

@@ -1,4 +1,6 @@
 // handle uncaught exceptonal  handler
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config.env" });
 process.on("uncaughtException", (err) => {
   console.log("UnCaught Exception Shuting Down........🔥");
   console.log(err.name, err.message);
@@ -18,3 +20,4 @@ process.on("unhandledRejection", (err) => {
     process.exit(1);
   });
 });
+//npm run start:prod

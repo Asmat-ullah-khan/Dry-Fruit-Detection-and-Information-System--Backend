@@ -32,6 +32,7 @@ const contactRouter = require("./routes/contact");
 const seasonRoutes = require("./routes/season.js");
 const healthRouter = require("./routes/health");
 const statsRoutes = require("./routes/stats");
+const qaRoutes = require("./routes/qaRoutes");
 const cors = require("cors");
 const path = require("path");
 
@@ -67,6 +68,7 @@ app.use("/api/v1/contacts", contactRouter);
 app.use("/api/v1/seasons", seasonRoutes);
 app.use("/api/v1/health", healthRouter);
 app.use("/api/v1/stats", statsRoutes);
+app.use("/api/qa", qaRoutes);
 /**
  * Handle all undefined routes
  * Forwards to the global error handler with a 404 error.
